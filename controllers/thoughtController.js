@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongoose').Types;
-const { Thoughts } = require('../models');
+const { Thoughts, User } = require('../models');
 
 
 
@@ -41,7 +41,69 @@ module.exports = {
             });
     },
 
-    //create a new thought
+    //create a new thought is this right?
+    createThought(req, res) {
+        Thoughts.create(req.body)
+        User.findOneAndUpdate(
+            {_id: req.params.userId },
+            { $addToSet: { thoughts: req.boy} },
+            { runValidators: true, new: true}
+        )
+        .then((user) =>
+            !user
+            ? res
+                .status(404).json({ message: 'No user found with that ID'})
+                : res.json(user)
+        )
+        .catch((err) => res.status(500).json(err));
+    },
+
+//updating a thought
+    updateThought(req, res) {
+        Thoughts.findOneAndUpdate (
+            { _id: req.params.thoughtId },
+            { $set: req.body },
+            { runValidators: true, new: true}
+        )
+        .then((thoughts) => 
+        !thoughts
+            ? res.status(404).json({ message: "No thought found with that Id" })
+            : res.json(thoughts)        
+        )
+        .catch((err) => res.status(500).json(err));
+    },
+//would we remove a thought by assoc user or just thought
+    removeThought(req, res) {
+        Thoughts.findOneAndRemove({ _id: req.params.thoughtsId })
+        .then((thoughts) =>
+         !thoughts  
+         ? res.status(404).json({ message: "No thought exists "})
+         : User.findOneAndUpdate(
+            { thoughts: req.params.thoughtsId },
+            { $pull : { thoughts: req.params.thoughtsId} },
+            { new: true }
+         )
+        )
+        .then((thoughts) =>
+        !thoughts
+        ? res.status(404).json({ message: 'Thought deleted, but no User found'})
+        : res.json({ message: "Thought deleted!"})
+        )
+
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+    },
 
 
+
+    //create a reaction
+    addReaction(req, res){
+        Thoughts.findOneAndUpdate(
+            { _id: req.params.thoughtsId },
+            { $addToSet: { reactions: req.body }},
+            { runValidators: true, new: true}
+        )
+    }
 }

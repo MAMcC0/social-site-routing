@@ -33,4 +33,4 @@ userSchema.virtual("reactions").get(function (){
 
 const Thoughts = model('thoughts', thoughtSchema);
 
-module.exports = Thoughts;
+module.export = Thoughts;

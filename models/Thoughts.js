@@ -27,6 +27,10 @@ const thoughtSchema = new Schema(
     }
 );
 
+userSchema.virtual("reactions").get(function (){
+    return this.reactions.length;
+   });
+
 const Thoughts = model('thoughts', thoughtSchema);
 
 module.exports = Thoughts;

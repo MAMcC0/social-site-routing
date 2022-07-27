@@ -20,10 +20,14 @@ const userSchema = new Schema(
     },
     {
         toJSON: {
-            getters: true,
+           virtuals: true,
         },
     }
 );
+
+userSchema.virtual("anything").get(function (){
+ return this.friends.length;
+});
 
 const User = model('user', userSchema);
 

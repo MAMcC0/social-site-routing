@@ -41,7 +41,7 @@ module.exports = {
             });
     },
 
-    //create a new thought is this right?
+    // create a thought
     createThought(req, res) {
         Thoughts.create(req.body)
         User.findOneAndUpdate(

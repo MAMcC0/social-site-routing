@@ -1,8 +1,6 @@
 
 
-
-
-function formateDate(timestamp){
+function formatDate(timestamp){
     var date = new Date(timestamp)
 
     var d = date.getDate();
@@ -13,4 +11,4 @@ function formateDate(timestamp){
 
 }
 
-module.exports = formateDate;
+module.exports = formatDate;

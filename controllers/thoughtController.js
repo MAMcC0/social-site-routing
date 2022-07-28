@@ -10,8 +10,7 @@ module.exports = {
         Thoughts.find()
         .then(async (thoughts) =>{
             const thoughtsObj = {
-                thoughts,
-                reactions: await aggReactions(),
+                thoughts
             };
             return res.json(thoughtsObj);
         })
@@ -27,12 +26,11 @@ module.exports = {
         Thoughts.findOne({ _id: req.params.thoughtsId })
         .select('-__v')
         .lean()
-        .then(async (thought) =>
-            !thought
+        .then(async (thoughts) =>
+            !thoughts
             ? res.status(404).json({ message: "No thought with that ID" })
             : res.json({
-                thoughts,
-                reactions //do I need a function for this
+                thoughts
             })
         )
             .catch((err) => {
@@ -46,7 +44,7 @@ module.exports = {
         Thoughts.create(req.body)
         User.findOneAndUpdate(
             {_id: req.params.userId },
-            { $addToSet: { thoughts: req.boy} },
+            { $addToSet: { thoughts: req.body} },
             { runValidators: true, new: true}
         )
         .then((user) =>
@@ -112,7 +110,7 @@ module.exports = {
         )
         .catch((err)=> res.status(500).json(err));
     },
-
+// to delete a reaction
     removeReaction(req, res){
         Thoughts.findOneAndUpdate(
             { _id: req.params.thoughtsId },
